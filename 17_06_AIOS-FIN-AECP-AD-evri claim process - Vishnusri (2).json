@@ -1,0 +1,712 @@
+{
+  "name": "AIOS-FIN-AECP-AD-evri claim process - Vishnusri",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -192,
+        432
+      ],
+      "id": "d0385282-c496-4912-bc60-02223755759c",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "clear",
+        "documentId": {
+          "__rl": true,
+          "value": "1R3L4WsLID44OmUXfCshDs1YQXhLwZaNTsowMOiuBVlo",
+          "mode": "list",
+          "cachedResultName": "Mock Hermes Claims Test_1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1R3L4WsLID44OmUXfCshDs1YQXhLwZaNTsowMOiuBVlo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "claims",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1R3L4WsLID44OmUXfCshDs1YQXhLwZaNTsowMOiuBVlo/edit#gid=0"
+        },
+        "keepFirstRow": true
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        32,
+        432
+      ],
+      "id": "92a5c61b-5462-4ca6-9909-f63a87899ef3",
+      "name": "Clear sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SEwO8K0zj0WAnrWc",
+          "name": "Vishnusri"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sortFieldsUi": {
+          "sortField": [
+            {
+              "fieldName": "name"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.sort",
+      "typeVersion": 1,
+      "position": [
+        480,
+        432
+      ],
+      "id": "d553aeb0-cdd1-458c-bd00-a221620b3d77",
+      "name": "Sort"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        704,
+        432
+      ],
+      "id": "1b8454a4-629f-4825-a131-8a906514d9f3",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "=1QePAtRGismv1jw8RZ0-xgfP2lFrSlS_m",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        928,
+        288
+      ],
+      "id": "d4b33f85-b8c9-4389-9a5e-78c48071dd17",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "rnpvwuEtVB8RaXop",
+          "name": "Vishnusri"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": " https://api.cloud.llamaindex.ai/api/v1/files",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization  ",
+              "value": "Bearer llx-MtOW1LhQOcjKn9xW5yzXjMMPbm7FNuZiSn4vG92S5NWlATNG"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "upload_file",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1152,
+        288
+      ],
+      "id": "eb38550e-6931-4f86-b686-98ded0843cdb",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0d5d2ec4-ad77-41a6-a079-e78ed5fa2fa9",
+              "name": "=file_id",
+              "value": "={{$json.id}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1376,
+        288
+      ],
+      "id": "14fc7de2-5878-4d59-8e18-4cd8352d028a",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloud.llamaindex.ai/api/v2/parse",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer llx-MtOW1LhQOcjKn9xW5yzXjMMPbm7FNuZiSn4vG92S5NWlATNG"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=file_id",
+              "value": "=72b05ab0-97cf-4443-96f7-20c79d6aa0e4"
+            },
+            {
+              "name": "tier",
+              "value": "agentic"
+            },
+            {
+              "name": "version",
+              "value": "latest"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        2112,
+        224
+      ],
+      "id": "af83a6df-b9b3-4986-a308-4eaf49a7cecb",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2112,
+        416
+      ],
+      "id": "f49f2e44-fd9c-459f-b3d3-03e0337a7154",
+      "name": "Wait",
+      "webhookId": "95c42d55-258b-4854-a330-302a49594d14"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.cloud.llamaindex.ai/api/v2/parse/pjb-g64q1zpcw36o7oe4c1cpypk66c9u?expand=markdown",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer llx-MtOW1LhQOcjKn9xW5yzXjMMPbm7FNuZiSn4vG92S5NWlATNG"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        2400,
+        416
+      ],
+      "id": "43839db1-0a81-4003-95b7-002cd2ec5c6c",
+      "name": "HTTP Request3"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Extract all invoice data from the following invoice:\n\n{{ $json.markdown.pages.map(p => p.markdown).join('\\n\\n') }}",
+        "options": {
+          "systemMessage": "You are You are an invoice data extraction assistant. You receive the full text of a courier invoice in Markdown format.\n\nExtract all product lines from the invoice. Return a raw JSON array only — no explanation, no commentary, no markdown code fences, no additional text.\n\nEach element in the array represents one product line. All invoices must produce at least one element. If the invoice contains multiple product lines, produce one element per line.\n\nEach element must contain exactly these 22 fields:\n\ninvoice_number\ninvoice_date\ncustomer_name\ncustomer_address\ncountry\norder_number\nshipment_details\ntracking_number\nproduct_name\nbrand_name\npostal_code\nquantity\nunit_price\ntotal_price\nsubtotal_items\ndiscount\nsubtotal\nvat\nshipping_cost\ntotal\npaid\ncurrency\n\nExtraction rules — apply every rule to every element:\n\ninvoice_number: Extract from the invoice header.\n\ninvoice_date: Extract the date exactly as it appears on the invoice. Do not modify it.\n\ncustomer_name: Full name of the recipient.\n\ncustomer_address: Concatenate all address lines into one comma-separated string.\n\ncountry: Country extracted from the address.\n\norder_number: If the order reference matches the format Repla-XX-XXXXX-XXXXX, return only the last numeric segment. Example: Repla-AB-12345-68179 → 68179. If the format does not match, return the order number as found.\n\nshipment_details: Carrier and service description only. Remove any text inside parentheses from this field.\n\ntracking_number: Extract the value inside parentheses from the shipment details text. Example: if shipment details contains (T062XA0024814417), return T062XA0024814417. If no parenthesised value is present, return an empty string.\n\nproduct_name: Description of the product on this line.\n\nbrand_name: Always return exactly \"Ledsone\" regardless of what appears on the invoice.\n\npostal_code: UK postcode extracted from the customer address. If not determinable, return an empty string.\n\nquantity: Number of units on this line as a number. No currency symbols.\n\nunit_price: Price per unit as a number. No currency symbols.\n\ntotal_price: Line total as a number. No currency symbols.\n\nsubtotal_items: Number of items in the invoice subtotal as a number. Must be between 40 and 60 inclusive. If the invoice value is below 40, return 40. If above 60, return 60.\n\ndiscount: Discount amount as a number. Return 0 if no discount applies.\n\nsubtotal: Invoice subtotal before VAT as a number. No currency symbols.\n\nvat: VAT amount as a number. No currency symbols.\n\nshipping_cost: Shipping charge as a number. No currency symbols.\n\ntotal: Invoice grand total as a number. No currency symbols.\n\npaid: Amount paid as a number. No currency symbols.\n\ncurrency: Detect from currency symbols present in the invoice. £ means GBP. $ means USD. € means EUR. If no symbol is found, return GBP.\n\nFor multi-line invoices: repeat invoice_number, invoice_date, customer_name, customer_address, country, order_number, shipment_details, tracking_number, brand_name, postal_code, subtotal_items, discount, subtotal, vat, shipping_cost, total, paid, and currency identically in every element. Only product_name, quantity, unit_price, and total_price change per line.\n\nReturn only a valid JSON array.\na helpful assistant"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        2048,
+        -176
+      ],
+      "id": "72810d6d-9ea6-4a3d-bfb0-ab899a681806",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1x_fUn17BbkbUG3a8g-WnZigd8QEZSQV30l5SXDVP3Wc",
+          "mode": "list",
+          "cachedResultName": "Mock Hermes Claims Test",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1x_fUn17BbkbUG3a8g-WnZigd8QEZSQV30l5SXDVP3Wc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Claims",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1x_fUn17BbkbUG3a8g-WnZigd8QEZSQV30l5SXDVP3Wc/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "CLIENT REFERNCE NO": "=={{$json.order_number}}",
+            "BRAND NAME": "=={{$json.brand_name}}",
+            "HERMES BARCODE": "=={{$json.tracking_number}}",
+            "ORDER NO": "=={{$json.order_number}}",
+            "CUSTOMER NAME": "=={{$json.customer_name}}",
+            "POSTCODE": "=={{$json.postal_code}}",
+            "PARCEL VALUE": "=={{$json.total_price}}",
+            "PRODUCT DESCRIPTION": "=={{$json.product_name}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "CLIENT REFERNCE NO",
+              "displayName": "CLIENT REFERNCE NO",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "BRAND NAME",
+              "displayName": "BRAND NAME",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "HERMES BARCODE",
+              "displayName": "HERMES BARCODE",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ORDER NO",
+              "displayName": "ORDER NO",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "CUSTOMER NAME",
+              "displayName": "CUSTOMER NAME",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "POSTCODE",
+              "displayName": "POSTCODE",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "PARCEL VALUE",
+              "displayName": "PARCEL VALUE",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "PRODUCT DESCRIPTION",
+              "displayName": "PRODUCT DESCRIPTION",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2624,
+        -64
+      ],
+      "id": "494be7ea-5b3f-4c6a-92ba-53bd23f0b4ef",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SEwO8K0zj0WAnrWc",
+          "name": "Vishnusri"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Upload File to LlamaIndex",
+        "height": 80,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1136,
+        480
+      ],
+      "typeVersion": 1,
+      "id": "461fce85-5dba-445e-9e80-2275ee895e94",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "Check Status",
+        "height": 80,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1584,
+        464
+      ],
+      "typeVersion": 1,
+      "id": "e2caab5e-71bd-4782-aea2-cc181ce068f7",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "Fetch Markdown",
+        "height": 80,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2288,
+        224
+      ],
+      "typeVersion": 1,
+      "id": "d4deb980-6f66-42a8-a3c7-80f0299d21a0",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "Check Status Again\n",
+        "height": 80,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2576,
+        416
+      ],
+      "typeVersion": 1,
+      "id": "41996b6d-cd9e-42f5-b179-8d3b9b483e93",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "model": "meta-llama/llama-4-scout-17b-16e-instruct",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        2176,
+        80
+      ],
+      "id": "98bf1ed8-cf72-4d60-9782-d6aae06668c7",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "HeeGZjGNa1ohpBbA",
+          "name": "Vishnusri"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const outputItems = [];\n\nfor (const item of $input.all()) {\nlet raw = (item.json.output || '').trim();\n\n// Strip JSON markdown fences\nraw = raw.replace(/^`(?:json)?\\s*/i, '').replace(/\\s*`$/i, '').trim();\n\nlet rows;\ntry {\nrows = JSON.parse(raw);\n} catch (e) {\ncontinue;\n}\n\nif (!Array.isArray(rows)) rows = [rows];\n\nfor (const row of rows) {\nif (typeof row !== 'object' || row === null) continue;\n\n// brand_name = Ledsone\nrow.brand_name = 'Ledsone';\n\n// Normalise customer_address\nlet addr = row.customer_address || '';\nif (Array.isArray(addr)) {\n  addr = addr.map(a => String(a).trim()).filter(Boolean).join(', ');\n} else {\n  addr = String(addr)\n    .split('\\n')\n    .map(a => a.trim())\n    .filter(Boolean)\n    .join(', ');\n}\nrow.customer_address = addr;\n\n// Extract UK postcode\nconst postcodeMatch = addr.match(\n  /\\b([A-Z]{1,2}\\d{1,2}[A-Z]?\\s*\\d[A-Z]{2})\\b/i\n);\n\nrow.postal_code = postcodeMatch\n  ? postcodeMatch[1].toUpperCase().trim()\n  : (row.postal_code || '');\n\n// Extract tracking number\nif (!row.tracking_number) {\n  const trackingMatch = String(\n    row.shipment_details || ''\n  ).match(/\\(([^)]+)\\)/);\n\n  if (trackingMatch) {\n    row.tracking_number = trackingMatch[1].trim();\n  }\n}\n\n// Date adjustment\nconst dateStr = String(row.invoice_date || '').trim();\n\nif (dateStr) {\n  let d = null;\n\n  if (/^\\d{4}-\\d{2}-\\d{2}$/.test(dateStr)) {\n    d = new Date(dateStr + 'T00:00:00');\n  } else if (/^\\d{2}\\/\\d{2}\\/\\d{4}$/.test(dateStr)) {\n    const [day, month, year] = dateStr.split('/');\n    d = new Date(`${year}-${month}-${day}T00:00:00`);\n  } else if (/^\\d{2}-\\d{2}-\\d{4}$/.test(dateStr)) {\n    const [day, month, year] = dateStr.split('-');\n    d = new Date(`${year}-${month}-${day}T00:00:00`);\n  } else {\n    d = new Date(dateStr);\n  }\n\n  if (d && !isNaN(d.getTime())) {\n    d.setDate(d.getDate() - 5);\n\n    const yyyy = d.getFullYear();\n    const mm = String(d.getMonth() + 1).padStart(2, '0');\n    const dd = String(d.getDate()).padStart(2, '0');\n\n    row.invoice_date = `${yyyy}-${mm}-${dd}`;\n  }\n}\n\n// Currency detection\nif (!row.currency) {\n  let detected = 'GBP';\n\n  for (const f of [\n    'unit_price',\n    'total_price',\n    'subtotal',\n    'total',\n    'paid'\n  ]) {\n    const v = String(row[f] || '');\n\n    if (v.includes('£')) {\n      detected = 'GBP';\n      break;\n    }\n\n    if (v.includes('$')) {\n      detected = 'USD';\n      break;\n    }\n\n    if (v.includes('€')) {\n      detected = 'EUR';\n      break;\n    }\n  }\n\n  row.currency = detected;\n}\n\n// Numeric conversion\nconst numericFields = [\n  'quantity',\n  'unit_price',\n  'total_price',\n  'subtotal_items',\n  'discount',\n  'subtotal',\n  'vat',\n  'shipping_cost',\n  'total',\n  'paid'\n];\n\nfor (const f of numericFields) {\n  const cleaned = String(row[f] ?? '0')\n    .replace(/[£$€,]/g, '')\n    .trim();\n\n  const parsed = parseFloat(cleaned);\n\n  row[f] = isNaN(parsed) ? 0.0 : parsed;\n}\n\n// Clamp subtotal_items\nrow.subtotal_items = Math.max(\n  40,\n  Math.min(60, row.subtotal_items)\n);\n\n// CSV-safe quoting\nfor (const key of Object.keys(row)) {\n  if (\n    typeof row[key] === 'string' &&\n    /[,\"\\n]/.test(row[key])\n  ) {\n    row[key] =\n      '\"' +\n      row[key].replace(/\"/g, '\"\"') +\n      '\"';\n  }\n}\n\noutputItems.push({\n  json: row\n});\n\n}\n}\n\nreturn outputItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2400,
+        -64
+      ],
+      "id": "7c210a96-f2f4-4d9c-b2fc-03a8d187410e",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "Mock.pdf",
+        "returnAll": true,
+        "filter": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        256,
+        432
+      ],
+      "id": "3dbc5d85-9494-470a-b1fc-d63b7fd582d3",
+      "name": "Search files and folders",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "rnpvwuEtVB8RaXop",
+          "name": "Vishnusri"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Clear sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear sheet": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sort": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search files and folders": {
+      "main": [
+        [
+          {
+            "node": "Sort",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "34871431-59a9-4874-ba38-1a51dc23e055",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "80b0590942b1866d418b5b88c83fd036cec904e5ac34048b721f6b3fc2751cee"
+  },
+  "nodeGroups": [],
+  "id": "JD1B8kP4MJdbRxXZ",
+  "tags": []
+}
