@@ -1,0 +1,823 @@
+{
+  "name": "AIOS-FIN-AECP-AD-evri claim process - Vishnusri",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -256,
+        -560
+      ],
+      "id": "d0385282-c496-4912-bc60-02223755759c",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "clear",
+        "documentId": {
+          "__rl": true,
+          "value": "1R3L4WsLID44OmUXfCshDs1YQXhLwZaNTsowMOiuBVlo",
+          "mode": "list",
+          "cachedResultName": "Mock Hermes Claims Test_1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1R3L4WsLID44OmUXfCshDs1YQXhLwZaNTsowMOiuBVlo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "claims",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1R3L4WsLID44OmUXfCshDs1YQXhLwZaNTsowMOiuBVlo/edit#gid=0"
+        },
+        "keepFirstRow": true
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        0,
+        -336
+      ],
+      "id": "92a5c61b-5462-4ca6-9909-f63a87899ef3",
+      "name": "Clear sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SEwO8K0zj0WAnrWc",
+          "name": "Vishnusri"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sortFieldsUi": {
+          "sortField": [
+            {
+              "fieldName": "name"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.sort",
+      "typeVersion": 1,
+      "position": [
+        512,
+        -576
+      ],
+      "id": "d553aeb0-cdd1-458c-bd00-a221620b3d77",
+      "name": "Sort"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        720,
+        -336
+      ],
+      "id": "1b8454a4-629f-4825-a131-8a906514d9f3",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "=1QePAtRGismv1jw8RZ0-xgfP2lFrSlS_m",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        928,
+        -576
+      ],
+      "id": "d4b33f85-b8c9-4389-9a5e-78c48071dd17",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "rnpvwuEtVB8RaXop",
+          "name": "Vishnusri"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": " https://api.cloud.llamaindex.ai/api/v1/files",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization  ",
+              "value": "Bearer llx-MtOW1LhQOcjKn9xW5yzXjMMPbm7FNuZiSn4vG92S5NWlATNG"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "upload_file",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1152,
+        -800
+      ],
+      "id": "eb38550e-6931-4f86-b686-98ded0843cdb",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0d5d2ec4-ad77-41a6-a079-e78ed5fa2fa9",
+              "name": "=file_id",
+              "value": "={{$json.id}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1376,
+        -576
+      ],
+      "id": "14fc7de2-5878-4d59-8e18-4cd8352d028a",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloud.llamaindex.ai/api/v2/parse",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer llx-MtOW1LhQOcjKn9xW5yzXjMMPbm7FNuZiSn4vG92S5NWlATNG"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "tier",
+              "value": "agentic"
+            },
+            {
+              "name": "version",
+              "value": "latest"
+            },
+            {
+              "name": "=file_id",
+              "value": "={{ $json.file_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1616,
+        -368
+      ],
+      "id": "af83a6df-b9b3-4986-a308-4eaf49a7cecb",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "amount": 30
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1824,
+        -576
+      ],
+      "id": "f49f2e44-fd9c-459f-b3d3-03e0337a7154",
+      "name": "Wait",
+      "webhookId": "95c42d55-258b-4854-a330-302a49594d14"
+    },
+    {
+      "parameters": {
+        "url": "={{ \"https://api.cloud.llamaindex.ai/api/v2/parse/\" + $json.id + \"?expand=markdown\" }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer llx-MtOW1LhQOcjKn9xW5yzXjMMPbm7FNuZiSn4vG92S5NWlATNG"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        2032,
+        -816
+      ],
+      "id": "43839db1-0a81-4003-95b7-002cd2ec5c6c",
+      "name": "HTTP Request3"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Extract all invoice data from the following invoice:\n\n{{ $json.markdown.pages.map(p => p.markdown).join('\\n\\n') }}",
+        "options": {
+          "systemMessage": "You are You are an invoice data extraction assistant. You receive the full text of a courier invoice in Markdown format.\n\nExtract all product lines from the invoice. Return a raw JSON array only — no explanation, no commentary, no markdown code fences, no additional text.\n\nEach element in the array represents one product line. All invoices must produce at least one element. If the invoice contains multiple product lines, produce one element per line.\n\nEach element must contain exactly these 22 fields:\n\ninvoice_number\ninvoice_date\ncustomer_name\ncustomer_address\ncountry\norder_number\nshipment_details\ntracking_number\nproduct_name\nbrand_name\npostal_code\nquantity\nunit_price\ntotal_price\nsubtotal_items\ndiscount\nsubtotal\nvat\nshipping_cost\ntotal\npaid\ncurrency\n\nExtraction rules — apply every rule to every element:\n\ninvoice_number: Extract from the invoice header.\n\ninvoice_date: Extract the date exactly as it appears on the invoice. Do not modify it.\n\ncustomer_name: Full name of the recipient.\n\ncustomer_address: Concatenate all address lines into one comma-separated string.\n\ncountry: Country extracted from the address.\n\norder_number: If the order reference matches the format Repla-XX-XXXXX-XXXXX, return only the last numeric segment. Example: Repla-AB-12345-68179 → 68179. If the format does not match, return the order number as found.\n\nshipment_details: Carrier and service description only. Remove any text inside parentheses from this field.\n\ntracking_number: Extract the value inside parentheses from the shipment details text. Example: if shipment details contains (T062XA0024814417), return T062XA0024814417. If no parenthesised value is present, return an empty string.\n\nproduct_name: Description of the product on this line.\n\nbrand_name: Always return exactly \"Ledsone\" regardless of what appears on the invoice.\n\npostal_code: UK postcode extracted from the customer address. If not determinable, return an empty string.\n\nquantity: Number of units on this line as a number. No currency symbols.\n\nunit_price: Price per unit as a number. No currency symbols.\n\ntotal_price: Line total as a number. No currency symbols.\n\nsubtotal_items: Number of items in the invoice subtotal as a number. Must be between 40 and 60 inclusive. If the invoice value is below 40, return 40. If above 60, return 60.\n\ndiscount: Discount amount as a number. Return 0 if no discount applies.\n\nsubtotal: Invoice subtotal before VAT as a number. No currency symbols.\n\nvat: VAT amount as a number. No currency symbols.\n\nshipping_cost: Shipping charge as a number. No currency symbols.\n\ntotal: Invoice grand total as a number. No currency symbols.\n\npaid: Amount paid as a number. No currency symbols.\n\ncurrency: Detect from currency symbols present in the invoice. £ means GBP. $ means USD. € means EUR. If no symbol is found, return GBP.\n\nFor multi-line invoices: repeat invoice_number, invoice_date, customer_name, customer_address, country, order_number, shipment_details, tracking_number, brand_name, postal_code, subtotal_items, discount, subtotal, vat, shipping_cost, total, paid, and currency identically in every element. Only product_name, quantity, unit_price, and total_price change per line.\n\nReturn only a valid JSON array.\na helpful assistant"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        2272,
+        -576
+      ],
+      "id": "72810d6d-9ea6-4a3d-bfb0-ab899a681806",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1x_fUn17BbkbUG3a8g-WnZigd8QEZSQV30l5SXDVP3Wc",
+          "mode": "list",
+          "cachedResultName": "Mock Hermes Claims Test",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1x_fUn17BbkbUG3a8g-WnZigd8QEZSQV30l5SXDVP3Wc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Claims",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1x_fUn17BbkbUG3a8g-WnZigd8QEZSQV30l5SXDVP3Wc/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "CLIENT REFERNCE NO": "=={{$json.order_number}}",
+            "BRAND NAME": "={{$json.brand_name}}",
+            "HERMES BARCODE": "={{$json.tracking_number}}",
+            "ORDER NO": "=={{$json.order_number}}",
+            "CUSTOMER NAME": "={{$json.customer_name}}",
+            "POSTCODE": "={{$json.postal_code}}",
+            "PARCEL VALUE": "={{$json.total}}",
+            "PRODUCT DESCRIPTION": "={{$json.product_name}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "CLIENT REFERNCE NO",
+              "displayName": "CLIENT REFERNCE NO",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "BRAND NAME",
+              "displayName": "BRAND NAME",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "HERMES BARCODE",
+              "displayName": "HERMES BARCODE",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ORDER NO",
+              "displayName": "ORDER NO",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "CUSTOMER NAME",
+              "displayName": "CUSTOMER NAME",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "POSTCODE",
+              "displayName": "POSTCODE",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "PARCEL VALUE",
+              "displayName": "PARCEL VALUE",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "PRODUCT DESCRIPTION",
+              "displayName": "PRODUCT DESCRIPTION",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2848,
+        -608
+      ],
+      "id": "494be7ea-5b3f-4c6a-92ba-53bd23f0b4ef",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SEwO8K0zj0WAnrWc",
+          "name": "Vishnusri"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Upload invoice PDF to LlamaIndex.\nReturns file ID for parsing.",
+        "height": 128,
+        "width": 230
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        976,
+        -896
+      ],
+      "typeVersion": 1,
+      "id": "461fce85-5dba-445e-9e80-2275ee895e94",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "Create LlamaIndex parse job.\nReturns parse job ID (pjb-*).",
+        "height": 128,
+        "width": 198
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1696,
+        -288
+      ],
+      "typeVersion": 1,
+      "id": "e2caab5e-71bd-4782-aea2-cc181ce068f7",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "LLM engine used by AI Agent.\nPerforms invoice field extraction.",
+        "height": 112,
+        "width": 246
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2480,
+        -864
+      ],
+      "typeVersion": 1,
+      "id": "d4deb980-6f66-42a8-a3c7-80f0299d21a0",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "Fetch parsed markdown using job ID.\nReturns invoice text content.",
+        "height": 144,
+        "width": 230
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2096,
+        -944
+      ],
+      "typeVersion": 1,
+      "id": "41996b6d-cd9e-42f5-b179-8d3b9b483e93",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "model": "meta-llama/llama-4-scout-17b-16e-instruct",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        2432,
+        -768
+      ],
+      "id": "98bf1ed8-cf72-4d60-9782-d6aae06668c7",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "HeeGZjGNa1ohpBbA",
+          "name": "Vishnusri"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let raw = $input.first().json.output;\n\n// Remove markdown fences / triple quotes\nraw = raw\n  .replace(/^```json\\s*/i, '')\n  .replace(/^```\\s*/i, '')\n  .replace(/```$/i, '')\n  .replace(/^\"\"\"/, '')\n  .replace(/\"\"\"$/, '')\n  .trim();\n\nconst rows = JSON.parse(raw);\n\nreturn rows.map(row => ({\n  json: row\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2640,
+        -368
+      ],
+      "id": "7c210a96-f2f4-4d9c-b2fc-03a8d187410e",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "Mock.pdf",
+        "returnAll": true,
+        "filter": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        272,
+        -784
+      ],
+      "id": "3dbc5d85-9494-470a-b1fc-d63b7fd582d3",
+      "name": "Search files and folders",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "rnpvwuEtVB8RaXop",
+          "name": "Vishnusri"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Fetch invoice PDFs from Google Drive folder.\nSource documents for claims extraction."
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        128,
+        -896
+      ],
+      "typeVersion": 1,
+      "id": "d1482f7b-2a24-4c14-b4ad-d86a8772785a",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "Sort files before processing.\nEnsures predictable execution order."
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        320,
+        -496
+      ],
+      "typeVersion": 1,
+      "id": "c7d06fa8-0273-45e5-83be-e17be70545f0",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "\n\nProcess one invoice at a time.\nPrevents batch processing issues."
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        800,
+        -256
+      ],
+      "typeVersion": 1,
+      "id": "7ee0780e-0a5d-49a4-a325-8054676139ee",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "Download PDF from Google Drive.\nRequired before LlamaIndex upload."
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        720,
+        -704
+      ],
+      "typeVersion": 1,
+      "id": "0115aa23-325a-48fa-902c-4704518aba42",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "content": "Store uploaded file ID as file_id.\nUsed in parse job request."
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1168,
+        -528
+      ],
+      "typeVersion": 1,
+      "id": "10bd1fdd-417f-4a71-b7ce-8c4ffcad2c77",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "content": "Wait 30 seconds for parsing.\nAllows LlamaIndex extraction to complete."
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1632,
+        -720
+      ],
+      "typeVersion": 1,
+      "id": "c9fc8819-9919-4566-b761-92cdccd976e2",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "content": "Extract structured invoice data.\nConvert markdown into JSON fields.",
+        "height": 176,
+        "width": 256
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2048,
+        -512
+      ],
+      "typeVersion": 1,
+      "id": "6ecea39e-3b60-4d98-b015-f7d5ef74bd09",
+      "name": "Sticky Note10"
+    },
+    {
+      "parameters": {
+        "content": "Parse AI JSON response.\nNormalize output for Google Sheets."
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2416,
+        -288
+      ],
+      "typeVersion": 1,
+      "id": "1b5dbc59-e1dd-4e43-8edc-c491d2011aeb",
+      "name": "Sticky Note11"
+    },
+    {
+      "parameters": {
+        "content": "Write extracted claim data.\nFinal output destination.",
+        "height": 128,
+        "width": 192
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2896,
+        -720
+      ],
+      "typeVersion": 1,
+      "id": "90f4955a-a19c-4e90-9c0b-b2fa52482989",
+      "name": "Sticky Note12"
+    },
+    {
+      "parameters": {
+        "content": "Clear previous test results.\nUsed only for testing workflow."
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -208,
+        -288
+      ],
+      "typeVersion": 1,
+      "id": "9138a70f-7a6b-404e-9463-40f46307fc7a",
+      "name": "Sticky Note13"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Clear sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear sheet": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sort": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search files and folders": {
+      "main": [
+        [
+          {
+            "node": "Sort",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "027e6305-3548-499b-9693-adb24688781b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "80b0590942b1866d418b5b88c83fd036cec904e5ac34048b721f6b3fc2751cee"
+  },
+  "nodeGroups": [],
+  "id": "JD1B8kP4MJdbRxXZ",
+  "tags": []
+}
